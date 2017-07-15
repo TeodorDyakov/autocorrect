@@ -1,7 +1,15 @@
 package suggester;
 
-public class DamerauLevehnsteinDistance {
-	public static int calculateDistance(CharSequence source, CharSequence target) {
+import util.Util;
+
+public class EditDistance {
+
+	/**
+	 * @param source
+	 * @param target
+	 * @return the edit distance between source and target
+	 */
+	public static int damerauLevehnstein(CharSequence source, CharSequence target) {
 		if (source == null || target == null) {
 			throw new IllegalArgumentException("Parameter must not be null");
 		}
@@ -31,4 +39,32 @@ public class DamerauLevehnsteinDistance {
 		}
 		return dist[sourceLength][targetLength];
 	}
+
+	/**
+	 * @param source
+	 * @param target
+	 * @return
+	 */
+	public static int levehnstein(String source, String target) {
+		int m = source.length();
+		int n = target.length();
+		int dp[][] = new int[m + 1][n + 1];
+		for (int i = 0; i <= n; i++) {
+			dp[0][i] = i;
+		}
+		for (int i = 0; i <= m; i++) {
+			dp[i][0] = i;
+		}
+
+		for (int i = 1; i <= m; i++) {
+			for (int j = 1; j <= n; j++) {
+				if (source.charAt(i - 1) == target.charAt(j - 1))
+					dp[i][j] = dp[i - 1][j - 1];
+				else
+					dp[i][j] = 1 + Util.min(dp[i][j - 1], dp[i - 1][j], dp[i - 1][j - 1]);
+			}
+		}
+		return dp[m][n];
+	}
+
 }

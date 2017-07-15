@@ -1,9 +1,6 @@
 package suggester;
 
-import java.awt.Point;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
 
 import util.Util;
 
@@ -14,22 +11,6 @@ public class KeyboardDistanceComparator implements Comparator<String> {
 	}
 
 	private String value;
-
-	final static Map<Character, Point> letterToPosition = new HashMap<>();
-	final static String[] KEYBOARD_ROWS = new String[] { "1234567890-+", "qwertyuiop[]", "asdfghjkl;'\\",
-			"zxcvbnm,./" };
-	static {
-		for (int i = 0; i < KEYBOARD_ROWS.length; i++) {
-			final String row = KEYBOARD_ROWS[i];
-			for (int j = 0; j < row.length(); j++) {
-				letterToPosition.put(row.charAt(j), new Point(i, j));
-			}
-		}
-	}
-
-	public static double keyboardDistance(char letter1, char letter2) {
-		return letterToPosition.get(letter1).distance(letterToPosition.get(letter2));
-	}
 
 	public static double distance(String str1, String str2) {
 		int m = str1.length();
@@ -48,7 +29,7 @@ public class KeyboardDistanceComparator implements Comparator<String> {
 					dp[i][j] = dp[i - 1][j - 1];
 				else
 					dp[i][j] = Util.min(1 + dp[i][j - 1], 1 + dp[i - 1][j],
-							0.5 * keyboardDistance(str1.charAt(i - 1), str2.charAt(j - 1))
+							0.5 * Keyboard.keyboardDistance(str1.charAt(i - 1), str2.charAt(j - 1))
 									+ (dp[i - 1][j - 1]));
 			}
 		}

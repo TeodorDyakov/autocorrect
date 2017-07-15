@@ -11,7 +11,7 @@ public class DamerauLevehnsteinDistanceComparator implements Comparator<String> 
 
 	@Override
 	public int compare(String arg0, String arg1) {
-		return DamerauLevehnsteinDistance.calculateDistance(string, arg0)
-				- DamerauLevehnsteinDistance.calculateDistance(string, arg1);
+		return EditDistance.damerauLevehnstein(string, arg0)
+				- EditDistance.damerauLevehnstein(string, arg1);
 	}
 }

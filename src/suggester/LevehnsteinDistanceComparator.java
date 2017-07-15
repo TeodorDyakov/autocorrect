@@ -12,8 +12,8 @@ public class LevehnsteinDistanceComparator implements Comparator<String> {
 
 	@Override
 	public int compare(String arg0, String arg1) {
-		return LevehnsteinDistance.distance(string, arg0)
-				- LevehnsteinDistance.distance(string, arg1);
+		return EditDistance.levehnstein(string, arg0)
+				- EditDistance.levehnstein(string, arg1);
 	}	
 
 }
