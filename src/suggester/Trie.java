@@ -2,18 +2,25 @@ package suggester;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class Trie {
 	public class Node {
-		final Node[] children = new Node[Trie.ALPHABET_SIZE];
-		boolean isEnd = false;
-	}
+		final Map<Character, Node> children;
+		boolean isEnd;
 
-	/**
-	 * the size of the English alphabet
-	 */
-	public static final int ALPHABET_SIZE = 26;
+		Node() {
+			/*
+			 * 0 initial capacity to reduce memory use
+			 */
+			children = new HashMap<>(0);
+			isEnd = false;
+		}
+
+	}
 
 	/**
 	 * starting node of the trie
@@ -43,8 +50,10 @@ public class Trie {
 	public void add(String str) {
 		Node curr = root;
 		for (int i = 0; i < str.length(); i++) {
-			int idx = str.charAt(i) - 'a';
-			curr = curr.children[idx] == null ? (curr.children[idx] = new Node()) : curr.children[idx];
+			if (curr.children.get(str.charAt(i)) == null) {
+				curr.children.put(str.charAt(i), new Node());
+			}
+			curr = curr.children.get(str.charAt(i));
 		}
 		curr.isEnd = true;
 	}
@@ -72,14 +81,11 @@ public class Trie {
 			return;
 		}
 		if (str.charAt(len) == WILDCARD) {
-			for (int i = 0; i < ALPHABET_SIZE; i++) {
-				if (root.children[i] != null) {
-					wildcardTraverse(str, prefix + (char) ('a' + i), root.children[i], len + 1,
-							wildcardMatches);
-				}
+			for (Entry<Character, Node> e : root.children.entrySet()) {
+				wildcardTraverse(str, prefix + e.getKey(), e.getValue(), len + 1, wildcardMatches);
 			}
 		} else {
-			wildcardTraverse(str, prefix + (str.charAt(len)), root.children[str.charAt(len) - 'a'], len + 1,
+			wildcardTraverse(str, prefix + str.charAt(len), root.children.get(str.charAt(len)), len + 1,
 					wildcardMatches);
 		}
 	}

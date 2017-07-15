@@ -9,6 +9,7 @@ import java.util.Set;
 public class WordLists {
 
 	public static Set<String> LOWERCASE_WORDS = new HashSet<>();
+	public static Set<String> BULGARIAN_LOWERCASE_WORDS = new HashSet<>();
 
 	static Scanner reader;
 	static {
@@ -22,6 +23,16 @@ public class WordLists {
 			if (str.matches("[a-zA-Z]+")) {
 				LOWERCASE_WORDS.add(str.toLowerCase());
 			}
+		}
+
+		try {
+			reader = new Scanner(new File("Bulgarian.txt"));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		while (reader.hasNext()) {
+			String str = reader.next().replaceAll("[^а-яА-Я]+", "");
+			BULGARIAN_LOWERCASE_WORDS.add(str.toLowerCase());
 		}
 	}
 }

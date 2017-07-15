@@ -9,7 +9,7 @@ public class EditDistance {
 	 * @param target
 	 * @return the edit distance between source and target
 	 */
-	public static int damerauLevehnstein(CharSequence source, CharSequence target) {
+	public static int damerauLevenshtein(CharSequence source, CharSequence target) {
 		if (source == null || target == null) {
 			throw new IllegalArgumentException("Parameter must not be null");
 		}
@@ -45,7 +45,7 @@ public class EditDistance {
 	 * @param target
 	 * @return
 	 */
-	public static int levehnstein(String source, String target) {
+	public static int levenshtein(String source, String target) {
 		int m = source.length();
 		int n = target.length();
 		int dp[][] = new int[m + 1][n + 1];

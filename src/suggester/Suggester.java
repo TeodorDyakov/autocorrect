@@ -1,6 +1,7 @@
 package suggester;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -10,69 +11,72 @@ import util.Util;
 
 public class Suggester {
 
-	public Suggester(Set<String> words) {
-		this.validWords = words;
+	private static final char WILDCARD = '?';
+
+	private Trie trie;
+
+	public static final int MAX_EDIT_DISANCE_THRESHOLD = 3;
+
+	public Suggester(Collection<String> words) {
+		trie = new Trie(words);
 	}
 
-	Set<String> validWords;
-
-	public static final int MAX_EDIT_DISANCE_THRESHOLD = 2;
-
-	private int validateDistance(int ed) {
+	private static int validateDistance(int ed) {
 		return ed > MAX_EDIT_DISANCE_THRESHOLD ? MAX_EDIT_DISANCE_THRESHOLD : ed;
 	}
 
-	private void generate(String s, int idx, int edits, List<String> candidates) {
-		if (idx > s.length() || edits == 0) {
-			// recursion end
-			candidates.add(s);
+	public void addWildcards(int editsLeft, String str, int idx, Set<String> set) {
+		if (idx > str.length() || editsLeft == 0) {
+			set.add(str);
 			return;
 		}
 		StringBuilder sb = null;
 
 		// don't edit
-		generate(s, idx + 1, edits, candidates);
+		addWildcards(editsLeft, str, idx + 1, set);
 
-		if (idx != s.length()) {
+		if (idx != str.length()) {
 
-			// replace
-			sb = new StringBuilder(s);
-			for (char i = 'a'; i <= 'z'; i++) {
-				sb.setCharAt(idx, i);
-				generate(sb.toString(), idx + 1, edits - 1, candidates);
-			}
+			// delete
+			sb = new StringBuilder(str);
+			addWildcards(editsLeft - 1, sb.deleteCharAt(idx).toString(), idx + 1, set);
 
-			// remove
-			sb = new StringBuilder(s);
-			generate(sb.deleteCharAt(idx).toString(), idx + 1, edits - 1, candidates);
+			// change
+			sb = new StringBuilder(str);
+			sb.setCharAt(idx, WILDCARD);
+			addWildcards(editsLeft - 1, sb.toString(), idx + 1, set);
 
 			// transpose
-			char[] arr = s.toCharArray();
-			if (idx != s.length() - 1) {
+			char[] arr = str.toCharArray();
+			if (idx != str.length() - 1) {
 				Util.swap(arr, idx, idx + 1);
-				generate(new String(arr), idx + 2, edits - 1, candidates);
 			}
+			addWildcards(editsLeft - 1, new String(arr), idx + 2, set);
 		}
 		// insert
-		for (char i = 'a'; i <= 'z'; i++) {
-			sb = new StringBuilder(s);
-			generate(sb.insert(idx, i).toString(), idx + 1, edits - 1, candidates);
-		}
+		sb = new StringBuilder(str);
+		addWildcards(editsLeft - 1, sb.insert(idx, WILDCARD).toString(), idx + 1, set);
 	}
 
-	public List<String> suggestions(String str, int ed) {
-		ed = validateDistance(ed);
-		List<String> candidates = new ArrayList<>();
-		generate(str, 0, ed, candidates);
+	public Set<String> getCandidates(String str, int ed) {
+		Set<String> candidates = new HashSet<>();
+		addWildcards(ed, str, 0, candidates);
+		return candidates;
+	}
+
+	public List<String> suggestions(String str, int maxEditDist) {
+		maxEditDist = validateDistance(maxEditDist);
+
 		List<String> matches = new ArrayList<>();
-		for (String s : candidates) {
-			if (validWords.contains(s)) {
-				matches.add(s);
-			}
+
+		for (String s : getCandidates(str, maxEditDist)) {
+			matches.addAll(trie.wildcardMatches(s));
 		}
 
 		matches = new ArrayList<>(new HashSet<>(matches));
-		Collections.sort(matches, new DamerauLevehnsteinDistanceComparator(str));
+
+		Collections.sort(matches, new DamerauLevenshteinDistanceComparator(str));
+
 		return matches;
 	}
 
