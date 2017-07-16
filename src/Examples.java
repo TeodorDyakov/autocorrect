@@ -44,5 +44,10 @@ public class Examples {
 		// [beer, bred, bier, boer, brey]
 
 		System.out.println(System.currentTimeMillis() - tic);
+
+		s = new Suggester(WordLists.BULGARIAN_LOWERCASE_WORDS);
+
+		System.out.println(s.suggestions("дървп"));
+
 	}
 }

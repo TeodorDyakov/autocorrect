@@ -33,7 +33,7 @@ public class EditDistance {
 						dist[i - 1][j - 1] + cost);
 				if (i > 1 && j > 1 && source.charAt(i - 1) == target.charAt(j - 2)
 						&& source.charAt(i - 2) == target.charAt(j - 1)) {
-					dist[i][j] = Math.min(dist[i][j], dist[i - 2][j - 2] + 1);
+					dist[i][j] = Math.min(dist[i][j], dist[i - 2][j - 2] + cost);
 				}
 			}
 		}

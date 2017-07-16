@@ -8,10 +8,18 @@ public class ProximityComparator implements Comparator<String> {
 
 	private final String string;
 
+	/**
+	 * @param string
+	 */
 	public ProximityComparator(String string) {
 		this.string = string;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+	 */
 	@Override
 	public int compare(String arg0, String arg1) {
 		int ed1 = EditDistance.damerauLevenshtein(string, arg0);
