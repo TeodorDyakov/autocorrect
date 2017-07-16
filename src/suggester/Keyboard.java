@@ -19,7 +19,7 @@ public class Keyboard {
 			}
 		}
 	}
-	// beeer
+	// beeerop
 
 	public static double keyboardDistance(char letter1, char letter2) {
 		return Keyboard.letterToPosition.get(letter1).distance(Keyboard.letterToPosition.get(letter2));
