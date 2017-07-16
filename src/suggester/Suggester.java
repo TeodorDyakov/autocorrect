@@ -15,10 +15,17 @@ public class Suggester {
 
 	private Trie trie;
 
+	/**
+	 * @param words
+	 */
 	public Suggester(Collection<String> words) {
 		trie = new Trie(words);
 	}
 
+	/**
+	 * @param str
+	 * @return
+	 */
 	private static int maxEditDistance(String str) {
 		if (str.length() <= 4) {
 			return 1;
@@ -29,6 +36,12 @@ public class Suggester {
 		return 3;
 	}
 
+	/**
+	 * @param editsLeft
+	 * @param str
+	 * @param idx
+	 * @param set
+	 */
 	public void addWildcards(int editsLeft, String str, int idx, Set<String> set) {
 		if (idx > str.length() || editsLeft == 0) {
 			set.add(str);
@@ -62,12 +75,21 @@ public class Suggester {
 		addWildcards(editsLeft - 1, sb.insert(idx, WILDCARD).toString(), idx + 1, set);
 	}
 
+	/**
+	 * @param str
+	 * @param ed
+	 * @return
+	 */
 	public Set<String> getCandidates(String str, int ed) {
 		Set<String> candidates = new HashSet<>();
 		addWildcards(ed, str, 0, candidates);
 		return candidates;
 	}
 
+	/**
+	 * @param str
+	 * @return
+	 */
 	public List<String> suggestions(String str) {
 		List<String> suggestions = new ArrayList<>();
 
