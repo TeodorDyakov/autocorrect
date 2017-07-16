@@ -19,12 +19,6 @@ public class Suggester {
 		trie = new Trie(words);
 	}
 
-	/**
-	 * Tune max edit distance according to word length
-	 * 
-	 * @param str
-	 * @return max edit distance for this word
-	 */
 	private static int maxEditDistance(String str) {
 		if (str.length() <= 4) {
 			return 1;
@@ -35,13 +29,7 @@ public class Suggester {
 		return 3;
 	}
 
-	/**
-	 * @param editsLeft
-	 * @param str
-	 * @param idx
-	 * @param set
-	 */
-	public void generateCandidates(int editsLeft, String str, int idx, Set<String> set) {
+	public void addWildcards(int editsLeft, String str, int idx, Set<String> set) {
 		if (idx > str.length() || editsLeft == 0) {
 			set.add(str);
 			return;
@@ -49,49 +37,37 @@ public class Suggester {
 		StringBuilder sb = null;
 
 		// don't edit
-		generateCandidates(editsLeft, str, idx + 1, set);
+		addWildcards(editsLeft, str, idx + 1, set);
 
 		if (idx != str.length()) {
 
 			// delete
 			sb = new StringBuilder(str);
-			generateCandidates(editsLeft - 1, sb.deleteCharAt(idx).toString(), idx + 1, set);
+			addWildcards(editsLeft - 1, sb.deleteCharAt(idx).toString(), idx + 1, set);
 
-			// change to wildcard
+			// change
 			sb = new StringBuilder(str);
 			sb.setCharAt(idx, WILDCARD);
-			generateCandidates(editsLeft - 1, sb.toString(), idx + 1, set);
+			addWildcards(editsLeft - 1, sb.toString(), idx + 1, set);
 
 			// transpose
 			char[] arr = str.toCharArray();
 			if (idx != str.length() - 1) {
 				Util.swap(arr, idx, idx + 1);
 			}
-			generateCandidates(editsLeft - 1, new String(arr), idx + 2, set);
+			addWildcards(editsLeft - 1, new String(arr), idx + 2, set);
 		}
-		// insert wildcard
+		// insert
 		sb = new StringBuilder(str);
-		generateCandidates(editsLeft - 1, sb.insert(idx, WILDCARD).toString(), idx + 1, set);
+		addWildcards(editsLeft - 1, sb.insert(idx, WILDCARD).toString(), idx + 1, set);
 	}
 
-	/**
-	 * @param str
-	 * @param ed
-	 * @return
-	 */
 	public Set<String> getCandidates(String str, int ed) {
 		Set<String> candidates = new HashSet<>();
-		generateCandidates(ed, str, 0, candidates);
+		addWildcards(ed, str, 0, candidates);
 		return candidates;
 	}
 
-	/**
-	 * Collects a list of suggestions and returns the 5 most probable sorted by
-	 * relevancy (most relevant first)
-	 * 
-	 * @param str
-	 * @return
-	 */
 	public List<String> suggestions(String str) {
 		List<String> suggestions = new ArrayList<>();
 
