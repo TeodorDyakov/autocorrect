@@ -1,6 +1,4 @@
 
-import suggester.Keyboard;
-import suggester.KeyboardDistanceComparator;
 import suggester.Suggester;
 import util.WordLists;
 
@@ -11,20 +9,40 @@ public class Examples {
 		Suggester s = new Suggester(WordLists.LOWERCASE_WORDS);
 
 		long tic = System.currentTimeMillis();
+
 		System.out.println(s.suggestions("definataly"));
+		// [definitely, defiantly, definably]
+
 		System.out.println(s.suggestions("ametour"));
+		// [amateur, detour, retour, ametrous, acetous]
+
 		System.out.println(s.suggestions("aceptablle"));
+		// [acceptable]
+
 		System.out.println(s.suggestions("acidentaly"));
+		// [accidental, accidentally, accidently]
+
 		System.out.println(s.suggestions("imposible"));
+		// [impossible, imposable, impassible, impedible, impatible]
+
 		System.out.println(s.suggestions("spdier"));
-		System.out.println(s.suggestions("palidnrome"));
+		// [spider, sprier, spier, soldier, pier]
+
 		System.out.println(s.suggestions("nightmar"));
+		// [nightmare, nightmary, nightman, nightjar, nightcap]
+
 		System.out.println(s.suggestions("cta"));
+		// [cat, ta, ca, acta, eta]
+
 		System.out.println(s.suggestions("throu"));
+		// [throu, throw, thou, throb, throe]
+
 		System.out.println(s.suggestions("bier"));
+		// [bier, tier, beer, pier, bien]
+
 		System.out.println(s.suggestions("brer"));
-		System.out.println(Keyboard.keyboardDistance('e', 'e'));
+		// [beer, bred, bier, boer, brey]
+
 		System.out.println(System.currentTimeMillis() - tic);
-		System.out.println(KeyboardDistanceComparator.distance("cat", "act"));
 	}
 }

@@ -77,8 +77,11 @@ public class Suggester {
 
 		suggestions = new ArrayList<>(new HashSet<>(suggestions));
 
-		Collections.sort(suggestions, new LevehnshteinDistanceComparator(str));
+		Collections.sort(suggestions, new ProximityComparator(str));
 
+		if (suggestions.size() >= 5) {
+			return suggestions.subList(0, 5);
+		}
 		return suggestions;
 	}
 
