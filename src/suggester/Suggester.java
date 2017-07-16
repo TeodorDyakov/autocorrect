@@ -15,14 +15,18 @@ public class Suggester {
 
 	private Trie trie;
 
-	public static final int MAX_EDIT_DISANCE_THRESHOLD = 3;
-
 	public Suggester(Collection<String> words) {
 		trie = new Trie(words);
 	}
 
-	private static int validateDistance(int ed) {
-		return ed > MAX_EDIT_DISANCE_THRESHOLD ? MAX_EDIT_DISANCE_THRESHOLD : ed;
+	private static int maxEditDistance(String str) {
+		if (str.length() <= 4) {
+			return 1;
+		}
+		if (str.length() <= 12) {
+			return 2;
+		}
+		return 3;
 	}
 
 	public void addWildcards(int editsLeft, String str, int idx, Set<String> set) {
@@ -64,20 +68,18 @@ public class Suggester {
 		return candidates;
 	}
 
-	public List<String> suggestions(String str, int maxEditDist) {
-		maxEditDist = validateDistance(maxEditDist);
+	public List<String> suggestions(String str) {
+		List<String> suggestions = new ArrayList<>();
 
-		List<String> matches = new ArrayList<>();
-
-		for (String s : getCandidates(str, maxEditDist)) {
-			matches.addAll(trie.wildcardMatches(s));
+		for (String s : getCandidates(str, maxEditDistance(str))) {
+			suggestions.addAll(trie.wildcardMatches(s));
 		}
 
-		matches = new ArrayList<>(new HashSet<>(matches));
+		suggestions = new ArrayList<>(new HashSet<>(suggestions));
 
-		Collections.sort(matches, new DamerauLevenshteinDistanceComparator(str));
+		Collections.sort(suggestions, new LevehnshteinDistanceComparator(str));
 
-		return matches;
+		return suggestions;
 	}
 
 }
