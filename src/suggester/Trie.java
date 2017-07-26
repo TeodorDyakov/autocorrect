@@ -61,7 +61,7 @@ public class Trie {
 	/* returns a list of all words matching the string with wildcards */
 	public List<String> wildcardMatches(String str) {
 		List<String> wildcardMatches = new ArrayList<>();
-		wildcardTraverse(str, "", root, 0, wildcardMatches);
+		wildcardTraverse(str, new StringBuilder(), root, 0, wildcardMatches);
 		return wildcardMatches;
 	}
 
@@ -69,24 +69,28 @@ public class Trie {
 	 * traverses the trie and adds all words matching the string with wildcards
 	 * * to list
 	 */
-	private void wildcardTraverse(String str, String prefix, Node root, int len,
+	private void wildcardTraverse(String pattern, StringBuilder prefix, Node root, int len,
 			List<String> wildcardMatches) {
 		if (root == null) {
 			return;
 		}
-		if (len == str.length()) {
+		if (len == pattern.length()) {
 			if (root.isEnd) {
-				wildcardMatches.add(prefix);
+				wildcardMatches.add(prefix.toString());
 			}
 			return;
 		}
-		if (str.charAt(len) == WILDCARD) {
+		if (pattern.charAt(len) == WILDCARD) {
 			for (Entry<Character, Node> e : root.children.entrySet()) {
-				wildcardTraverse(str, prefix + e.getKey(), e.getValue(), len + 1, wildcardMatches);
+				prefix.append(e.getKey());
+				wildcardTraverse(pattern, prefix, e.getValue(), len + 1, wildcardMatches);
+				prefix.deleteCharAt(prefix.length() - 1);
 			}
 		} else {
-			wildcardTraverse(str, prefix + str.charAt(len), root.children.get(str.charAt(len)), len + 1,
+			prefix.append(pattern.charAt(len));
+			wildcardTraverse(pattern, prefix, root.children.get(pattern.charAt(len)), len + 1,
 					wildcardMatches);
+			prefix.deleteCharAt(prefix.length() - 1);
 		}
 	}
 

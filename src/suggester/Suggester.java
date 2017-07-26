@@ -52,6 +52,10 @@ public class Suggester {
 		// don't edit
 		addWildcards(editsLeft, str, idx + 1, set);
 
+		// insert
+		sb = new StringBuilder(str);
+		addWildcards(editsLeft - 1, sb.insert(idx, WILDCARD).toString(), idx + 1, set);
+
 		if (idx != str.length()) {
 
 			// delete
@@ -70,9 +74,7 @@ public class Suggester {
 			}
 			addWildcards(editsLeft - 1, new String(arr), idx + 2, set);
 		}
-		// insert
-		sb = new StringBuilder(str);
-		addWildcards(editsLeft - 1, sb.insert(idx, WILDCARD).toString(), idx + 1, set);
+
 	}
 
 	/**
