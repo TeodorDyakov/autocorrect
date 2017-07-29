@@ -8,7 +8,11 @@ public class Examples {
 
 		Suggester s = new Suggester(WordLists.LOWERCASE_WORDS);
 
-		long tic = System.currentTimeMillis();
+		System.out.println(s.autocomplete("ca"));
+		// [came, can, case, carried, cause]
+
+		System.out.println(s.autocomplete("carto"));
+		// [cartoon, cartobibliography, cartouche, cartomancy, carton]
 
 		System.out.println(s.suggestions("definataly"));
 		// [definitely, defiantly, definably]
@@ -42,7 +46,5 @@ public class Examples {
 
 		System.out.println(s.suggestions("brer"));
 		// [beer, bred, bier, boer, brey]
-
-		System.out.println(System.currentTimeMillis() - tic);
 	}
 }

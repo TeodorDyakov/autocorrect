@@ -94,4 +94,36 @@ public class Trie {
 		}
 	}
 
+	private Node getNode(String str) {
+		Node node = root;
+		for (int i = 0; i < str.length(); i++) {
+			Node child = node.children.get(str.charAt(i));
+			if (child == null) {
+				return null;
+			}
+			node = child;
+		}
+		return node;
+	}
+
+	public List<String> prefixedWords(String str) {
+		Node curr = getNode(str);
+		List<String> prefixedWords = new ArrayList<>();
+		DFS(curr, str, prefixedWords);
+		return prefixedWords;
+	}
+
+	/* traverses the trie depth first and adds all words to list */
+	private static void DFS(Node root, String prefix, List<String> list) {
+		if (root == null) {
+			return;
+		}
+		if (root.isEnd) {
+			list.add(prefix);
+		}
+		for (Entry<Character, Node> e : root.children.entrySet()) {
+			DFS(e.getValue(), prefix + e.getKey(), list);
+		}
+	}
+
 }

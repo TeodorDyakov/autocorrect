@@ -3,17 +3,19 @@ package suggester;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import util.Util;
+import util.WordLists;
 
 public class Suggester {
 
 	private static final char WILDCARD = '?';
 
-	private Trie trie;
+	public Trie trie;
 
 	/**
 	 * @param words
@@ -102,6 +104,37 @@ public class Suggester {
 		suggestions = new ArrayList<>(new HashSet<>(suggestions));
 
 		Collections.sort(suggestions, new ProximityComparator(str));
+
+		if (suggestions.size() >= 5) {
+			return suggestions.subList(0, 5);
+		}
+		return suggestions;
+	}
+
+	/**
+	 * @param str
+	 * @return
+	 */
+	public List<String> autocomplete(String str) {
+		List<String> suggestions = trie.prefixedWords(str);
+
+		Collections.sort(suggestions, new Comparator<String>() {
+
+			@Override
+			public int compare(String arg0, String arg1) {
+				Integer freq1 = WordLists.freqMap.get(arg0);
+				Integer freq2 = WordLists.freqMap.get(arg1);
+				if (freq1 == null && freq2 == null) {
+					return 0;
+				} else if (freq1 == null) {
+					return 1;
+				} else if (freq2 == null) {
+					return -1;
+				}
+				return freq2 - freq1;
+			}
+
+		});
 
 		if (suggestions.size() >= 5) {
 			return suggestions.subList(0, 5);
