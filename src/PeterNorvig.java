@@ -1,4 +1,5 @@
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class PeterNorvig {
@@ -19,6 +20,18 @@ public class PeterNorvig {
 		}
 		confusionSet.retainAll(words);
 		return confusionSet;
+	}
+
+	static String getBestSuggestion(String word, Map<String, Integer> wordCount) {
+		String best = "";
+		int max = 0;
+		for (String s : getConfusionSet(word)) {
+			if (wordCount.containsKey(s) && max < wordCount.get(s)) {
+				max = wordCount.get(s);
+				best = s;
+			}
+		}
+		return best;
 	}
 
 	public static void main(String[] args) {
