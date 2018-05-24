@@ -46,5 +46,7 @@ public class Examples {
 
 		System.out.println(s.suggestions("brer"));
 		// [beer, bred, bier, boer, brey]
+		
+		//test
 	}
 }
